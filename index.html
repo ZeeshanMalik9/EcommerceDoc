@@ -5,37 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zeemerse - Multi-Vendor E-Commerce Platform</title>
     <style>
+        /* General Setup & Resets */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+            /* FIX: Prevents content from being hidden under the fixed header during anchor link navigation. */
+            scroll-padding-top: 80px; 
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             overflow-x: hidden;
         }
 
-        /* Header */
+        /* --- Header & Navigation --- */
         .header {
             position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             z-index: 1000;
             padding: 1rem 0;
-            transition: all 0.3s ease;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
 
         .header.scrolled {
             background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(20px);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
         }
 
         .nav-container {
@@ -53,14 +62,16 @@
             font-weight: bold;
             color: #ffffff;
             text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-            z-index: 1001;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .nav-links {
             display: flex;
             gap: 1rem;
-            transition: all 0.3s ease;
         }
 
         .nav-links a {
@@ -89,18 +100,17 @@
             border-radius: 2px;
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover, .nav-links a.active {
             background: rgba(255, 255, 255, 0.15);
-            color: #ffffff;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
         }
 
-        .nav-links a:hover::after {
+        .nav-links a:hover::after, .nav-links a.active::after {
             width: 80%;
         }
-
-        /* Mobile Menu */
+        
+        /* --- Mobile Menu --- */
         .mobile-menu-toggle {
             display: none;
             flex-direction: column;
@@ -108,6 +118,11 @@
             z-index: 1001;
             transition: all 0.3s ease;
             padding: 0.5rem;
+            border-radius: 8px;
+        }
+        
+        .mobile-menu-toggle:hover {
+            background: rgba(255,255,255,0.1);
         }
 
         .hamburger {
@@ -161,43 +176,27 @@
         }
 
         .mobile-nav-links a {
+            display: block;
             color: #ffffff;
             text-decoration: none;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
             padding: 1rem 1.5rem;
             border-radius: 15px;
             transition: all 0.3s ease;
-            position: relative;
             overflow: hidden;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
-        .mobile-nav-links a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(255, 107, 107, 0.2), rgba(255, 217, 61, 0.2));
-            transition: left 0.3s ease;
-        }
-
-        .mobile-nav-links a:hover::before {
-            left: 0;
-        }
-
-        .mobile-nav-links a:hover {
+        .mobile-nav-links a:hover, .mobile-nav-links a.active {
             transform: translateX(10px);
-            background: rgba(255, 107, 107, 0.15);
+            background: rgba(255, 107, 107, 0.2);
             color: #ffffff;
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
         }
 
-        /* Overlay for mobile menu */
         .mobile-overlay {
             position: fixed;
             top: 0;
@@ -207,7 +206,7 @@
             background: rgba(0, 0, 0, 0.7);
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
             z-index: 998;
             backdrop-filter: blur(3px);
         }
@@ -217,18 +216,7 @@
             visibility: visible;
         }
 
-        /* Active states for better visibility */
-        .nav-links a.active {
-            background: rgba(255, 107, 107, 0.2);
-            color: #ffffff;
-        }
-
-        .mobile-nav-links a.active {
-            background: rgba(255, 107, 107, 0.3);
-            color: #ffffff;
-        }
-
-        /* Hero Section - Under Construction */
+        /* --- Hero Section --- */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -238,6 +226,8 @@
             padding: 0 2rem;
             position: relative;
             overflow: hidden;
+            /* FIX: Added padding to push content below the fixed header */
+            padding-top: 100px;
         }
 
         .hero::before {
@@ -247,7 +237,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
             animation: float 20s ease-in-out infinite;
         }
 
@@ -276,8 +266,8 @@
             margin-bottom: 2rem;
             animation: fadeInUp 1s ease 0.2s both;
         }
-
-        /* Construction Animation */
+        
+        /* Under Construction Animation */
         .construction-container {
             margin: 3rem 0;
             animation: fadeInUp 1s ease 0.4s both;
@@ -288,11 +278,13 @@
             color: #ff6b6b;
             margin-bottom: 2rem;
             font-weight: 600;
+            transition: opacity 0.5s ease;
         }
 
         .gear-animation {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 2rem;
             margin: 2rem 0;
         }
@@ -326,10 +318,10 @@
                 -16px 8px 0 #ff6b6b,
                 -32px 8px 0 #ff6b6b;
         }
-
+        
         .gear:nth-child(2) {
             animation-direction: reverse;
-            animation-duration: 2s;
+            animation-duration: 2.5s;
         }
 
         .gear:nth-child(3) {
@@ -342,17 +334,11 @@
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Main Content */
+        /* --- Main Content & Sections --- */
         .main-content {
             background: white;
             position: relative;
@@ -372,7 +358,7 @@
         .section-title {
             font-size: 3rem;
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -384,11 +370,11 @@
             text-align: center;
             margin-bottom: 4rem;
             color: #666;
-            max-width: 600px;
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
         }
-
+        
         /* API Endpoint Card */
         .api-endpoint {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -399,6 +385,7 @@
             margin: 3rem 0;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         .api-endpoint::before {
@@ -409,7 +396,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            animation: shine 3s infinite;
+            animation: shine 4s infinite;
         }
 
         @keyframes shine {
@@ -425,8 +412,14 @@
             border-radius: 10px;
             margin: 1rem 0;
             word-break: break-all;
+            cursor: pointer;
+            transition: background 0.3s ease;
         }
 
+        .endpoint-url:hover {
+             background: rgba(0,0,0,0.4);
+        }
+        
         /* Tech Stack Grid */
         .tech-grid {
             display: grid;
@@ -439,25 +432,16 @@
             background: white;
             padding: 2rem;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-        }
-
-        .tech-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-top: 4px solid #667eea;
         }
 
         .tech-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
         }
 
         .tech-card h3 {
@@ -504,6 +488,7 @@
             border-radius: 20px;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.3);
         }
 
         .feature-card::after {
@@ -513,7 +498,7 @@
             right: 20px;
             width: 60px;
             height: 60px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15);
             border-radius: 50%;
         }
 
@@ -522,15 +507,9 @@
             margin-bottom: 1rem;
         }
 
-        .feature-card p {
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-
         /* Database Schema */
         .db-schema {
             background: #f8f9fa;
-            padding: 4rem 0;
         }
 
         .schema-grid {
@@ -544,7 +523,6 @@
             border-radius: 15px;
             padding: 2rem;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            position: relative;
         }
 
         .entity-card h4 {
@@ -620,7 +598,6 @@
             border-radius: 8px;
             font-family: 'Monaco', monospace;
             font-size: 0.85rem;
-            position: relative;
             transition: all 0.3s ease;
         }
 
@@ -642,7 +619,7 @@
         .patch { background: #17a2b8; color: white; }
         .delete { background: #dc3545; color: white; }
 
-        /* Footer */
+        /* --- Footer --- */
         .footer {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -654,252 +631,113 @@
             margin-bottom: 1rem;
         }
 
-        .footer p {
-            opacity: 0.9;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .nav-container {
-                padding: 0 1.5rem;
-            }
-            
-            .container {
-                padding: 0 1.5rem;
-            }
-            
-            .tech-grid,
-            .features-grid,
-            .schema-grid,
-            .api-grid {
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: 1.5rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .mobile-menu-toggle {
-                display: flex;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .logo {
-                font-size: 1.8rem;
-            }
-            
-            .nav-container {
-                padding: 0 1rem;
-            }
-            
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.2rem;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-            
-            .container {
-                padding: 0 1rem;
-            }
-            
-            .tech-grid,
-            .features-grid,
-            .schema-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .api-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .gear-animation {
-                gap: 1rem;
-            }
-            
-            .gear {
-                width: 50px;
-                height: 50px;
-            }
-            
-            .endpoint-url {
-                font-size: 1rem;
-                padding: 0.8rem 1rem;
-                word-break: break-all;
-            }
-            
-            .section {
-                padding: 4rem 0;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo {
-                font-size: 1.5rem;
-            }
-            
-            .hero h1 {
-                font-size: 2rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1rem;
-            }
-            
-            .section-title {
-                font-size: 1.8rem;
-            }
-            
-            .nav-container {
-                padding: 0 0.5rem;
-            }
-            
-            .container {
-                padding: 0 0.5rem;
-            }
-            
-            .tech-card,
-            .feature-card,
-            .entity-card,
-            .api-category {
-                padding: 1.5rem;
-            }
-            
-            .gear-animation {
-                flex-direction: column;
-                align-items: center;
-                gap: 1rem;
-            }
-            
-            .gear {
-                width: 40px;
-                height: 40px;
-            }
-            
-            .endpoint-url {
-                font-size: 0.9rem;
-                padding: 0.6rem 0.8rem;
-            }
-            
-            .mobile-nav {
-                width: 90%;
-                padding: 5rem 1.5rem 1.5rem;
-            }
-            
-            .mobile-nav-links a {
-                font-size: 1.1rem;
-                padding: 0.8rem 1rem;
-            }
-            
-            .section {
-                padding: 3rem 0;
-            }
-            
-            .api-list li {
-                padding: 0.6rem;
-                font-size: 0.8rem;
-            }
-            
-            .method {
-                font-size: 0.7rem;
-                padding: 0.1rem 0.4rem;
-                margin-right: 0.5rem;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-            
-            .section-title {
-                font-size: 1.6rem;
-            }
-            
-            .logo {
-                font-size: 1.3rem;
-            }
-            
-            .endpoint-url {
-                font-size: 0.8rem;
-            }
-            
-            .tech-card,
-            .feature-card,
-            .entity-card,
-            .api-category {
-                padding: 1rem;
-            }
-        }
-
-        /* Tablet specific adjustments */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .hero h1 {
-                font-size: 3.5rem;
-            }
-            
-            .section-title {
-                font-size: 2.5rem;
-            }
-            
-            .tech-grid,
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .api-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .schema-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Large screens optimization */
-        @media (min-width: 1440px) {
-            .container {
-                max-width: 1400px;
-            }
-            
-            .nav-container {
-                max-width: 1400px;
-            }
-            
-            .tech-grid,
-            .features-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
-            .api-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
-            .schema-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-
-        /* Scroll animations */
+        /* --- Animations --- */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.6s ease;
+            transition: opacity 0.6s ease, transform 0.6s ease;
         }
 
         .fade-in.visible {
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* --- Responsive Design --- */
+        /* Large screens */
+        @media (min-width: 1440px) {
+            .container, .nav-container {
+                max-width: 1400px;
+            }
+            .tech-grid, .features-grid, .api-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .schema-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* Tablet */
+        @media (max-width: 1024px) {
+            .container, .nav-container {
+                padding: 0 1.5rem;
+            }
+            .tech-grid, .features-grid, .schema-grid, .api-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.5rem;
+            }
+            .hero h1 { font-size: 3.5rem; }
+            .section-title { font-size: 2.5rem; }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: flex;
+            }
+            .nav-links {
+                display: none;
+            }
+            .logo {
+                font-size: 1.8rem;
+            }
+            .container, .nav-container {
+                padding: 0 1rem;
+            }
+            .hero h1 { font-size: 2.5rem; }
+            .hero-subtitle { font-size: 1.2rem; }
+            .section-title { font-size: 2rem; }
+            .tech-grid, .features-grid, .schema-grid, .api-grid {
+                grid-template-columns: 1fr;
+            }
+            .gear-animation { gap: 1rem; }
+            .gear { width: 50px; height: 50px; }
+            .endpoint-url { font-size: 1rem; }
+            .section { padding: 4rem 0; }
+        }
+
+        /* Small Mobile */
+        @media (max-width: 480px) {
+            html { scroll-padding-top: 70px; }
+            .logo { font-size: 1.5rem; }
+            .hero { padding: 80px 1rem 0 1rem; }
+            .hero h1 { font-size: 2.2rem; line-height: 1.2; }
+            .hero-subtitle { font-size: 1.1rem; }
+            .section-title { font-size: 1.8rem; }
+            .section-subtitle { font-size: 1rem; }
+            .container, .nav-container { padding: 0 1rem; }
+            
+            .tech-card, .feature-card, .entity-card, .api-category {
+                padding: 1.5rem;
+            }
+            .gear-animation {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+            .gear { 
+                width: 40px; 
+                height: 40px;
+                border-width: 3px;
+            }
+            .gear::before {
+                top: -7px;
+                width: 7px;
+                height: 7px;
+                box-shadow: 
+                    0 14px 0 #ff6b6b,
+                    0 28px 0 #ff6b6b,
+                    14px 7px 0 #ff6b6b,
+                    -14px 7px 0 #ff6b6b;
+            }
+            .endpoint-url { font-size: 0.9rem; padding: 0.8rem 1rem; }
+            .mobile-nav { width: 90%; padding: 5rem 1.5rem 1.5rem; }
+            .mobile-nav-links a { font-size: 1.1rem; }
+            .section { padding: 3rem 0; }
+            .api-list li { padding: 0.6rem; font-size: 0.8rem; }
+            .method { padding: 0.2rem 0.5rem; }
+        }
+
     </style>
 </head>
 <body>
@@ -927,15 +765,15 @@
         <!-- Mobile Navigation -->
         <div class="mobile-nav" id="mobileNav">
             <ul class="mobile-nav-links">
-                <li><a href="#overview" onclick="closeMobileMenu()">🎯 Overview</a></li>
-                <li><a href="#tech-stack" onclick="closeMobileMenu()">⚡ Tech Stack</a></li>
-                <li><a href="#database" onclick="closeMobileMenu()">🗄️ Database</a></li>
-                <li><a href="#apis" onclick="closeMobileMenu()">🔗 APIs</a></li>
+                <li><a href="#overview" class="mobile-nav-link">🎯 Overview</a></li>
+                <li><a href="#tech-stack" class="mobile-nav-link">⚡ Tech Stack</a></li>
+                <li><a href="#database" class="mobile-nav-link">🗄️ Database</a></li>
+                <li><a href="#apis" class="mobile-nav-link">🔗 APIs</a></li>
             </ul>
         </div>
 
         <!-- Mobile Overlay -->
-        <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+        <div class="mobile-overlay" id="mobileOverlay"></div>
     </header>
 
     <!-- Hero Section -->
@@ -958,7 +796,7 @@
 
             <div class="api-endpoint">
                 <h3>Backend API Endpoint</h3>
-                <div class="endpoint-url">https://zeemerce-backend.onrender.com/</div>
+                <div class="endpoint-url" title="Click to copy">https://zeemerce-backend.onrender.com/</div>
                 <p>Ready for integration • RESTful APIs • JWT Authentication</p>
                 
                 <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
@@ -966,19 +804,19 @@
                        style="background: rgba(0,0,0,0.3); color: white; padding: 0.8rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem;"
                        onmouseover="this.style.background='rgba(0,0,0,0.5)'; this.style.transform='translateY(-2px)'"
                        onmouseout="this.style.background='rgba(0,0,0,0.3)'; this.style.transform='translateY(0)'">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                        View Source Code
+                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                         </svg>
+                         View Source Code
                     </a>
                     <a href="https://zeemerce-backend.onrender.com/" target="_blank" 
                        style="background: linear-gradient(45deg, #ff6b6b, #ffd93d); color: white; padding: 0.8rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem;"
                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 20px rgba(255,107,107,0.3)'"
                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                        Live API
+                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                         </svg>
+                         Live API
                     </a>
                 </div>
             </div>
@@ -987,6 +825,7 @@
 
     <!-- Main Content -->
     <main class="main-content">
+        <!-- All sections from original file are here -->
         <!-- Overview Section -->
         <section id="overview" class="section">
             <div class="container">
@@ -994,8 +833,8 @@
                 <p class="section-subtitle fade-in">
                     A robust, scalable e-commerce platform backend built with Spring Boot, supporting multi-vendor operations with advanced features.
                 </p>
-                
                 <div class="features-grid fade-in">
+                    <!-- Feature Cards -->
                     <div class="feature-card">
                         <h3>🔐 Authentication & Authorization</h3>
                         <p>Secure JWT-based authentication with role-based access control for customers, sellers, and admins. OTP verification for enhanced security.</p>
@@ -1031,62 +870,14 @@
                 <p class="section-subtitle fade-in">
                     Built with modern Java technologies and industry best practices for scalability and maintainability.
                 </p>
-
                 <div class="tech-grid fade-in">
-                    <div class="tech-card">
-                        <h3>🔧 Core Framework</h3>
-                        <ul class="tech-list">
-                            <li>Java 17</li>
-                            <li>Spring Boot 3.5.5</li>
-                            <li>Spring Data JPA</li>
-                            <li>Spring Security</li>
-                            <li>Spring Web</li>
-                            <li>Spring Boot Mail</li>
-                        </ul>
-                    </div>
-                    <div class="tech-card">
-                        <h3>🗄️ Database & ORM</h3>
-                        <ul class="tech-list">
-                            <li>MySQL 8.0+</li>
-                            <li>Hibernate ORM</li>
-                            <li>MySQL Connector/J</li>
-                            <li>JPA Repositories</li>
-                        </ul>
-                    </div>
-                    <div class="tech-card">
-                        <h3>🔒 Security & Auth</h3>
-                        <ul class="tech-list">
-                            <li>JWT (JJWT)</li>
-                            <li>Spring Security</li>
-                            <li>BCrypt Password Encoding</li>
-                            <li>OTP Verification</li>
-                        </ul>
-                    </div>
-                    <div class="tech-card">
-                        <h3>💰 Payment Gateways</h3>
-                        <ul class="tech-list">
-                            <li>Razorpay v1.4.6</li>
-                            <li>Stripe v26.12.0</li>
-                            <li>COD Support</li>
-                        </ul>
-                    </div>
-                    <div class="tech-card">
-                        <h3>🛠️ Development Tools</h3>
-                        <ul class="tech-list">
-                            <li>Maven Build Tool</li>
-                            <li>Lombok</li>
-                            <li>Spring Boot Validation</li>
-                            <li>JUnit Testing</li>
-                        </ul>
-                    </div>
-                    <div class="tech-card">
-                        <h3>📧 Communication</h3>
-                        <ul class="tech-list">
-                            <li>SMTP Email Service</li>
-                            <li>OTP Generation</li>
-                            <li>Order Notifications</li>
-                        </ul>
-                    </div>
+                    <!-- Tech Cards -->
+                    <div class="tech-card"><h3>🔧 Core Framework</h3><ul class="tech-list"><li>Java 17</li><li>Spring Boot 3.5.5</li><li>Spring Data JPA</li><li>Spring Security</li><li>Spring Web</li><li>Spring Boot Mail</li></ul></div>
+                    <div class="tech-card"><h3>🗄️ Database & ORM</h3><ul class="tech-list"><li>MySQL 8.0+</li><li>Hibernate ORM</li><li>MySQL Connector/J</li><li>JPA Repositories</li></ul></div>
+                    <div class="tech-card"><h3>🔒 Security & Auth</h3><ul class="tech-list"><li>JWT (JJWT)</li><li>Spring Security</li><li>BCrypt Password Encoding</li><li>OTP Verification</li></ul></div>
+                    <div class="tech-card"><h3>💰 Payment Gateways</h3><ul class="tech-list"><li>Razorpay v1.4.6</li><li>Stripe v26.12.0</li><li>COD Support</li></ul></div>
+                    <div class="tech-card"><h3>🛠️ Development Tools</h3><ul class="tech-list"><li>Maven Build Tool</li><li>Lombok</li><li>Spring Boot Validation</li><li>JUnit Testing</li></ul></div>
+                    <div class="tech-card"><h3>📧 Communication</h3><ul class="tech-list"><li>SMTP Email Service</li><li>OTP Generation</li><li>Order Notifications</li></ul></div>
                 </div>
             </div>
         </section>
@@ -1098,106 +889,16 @@
                 <p class="section-subtitle fade-in">
                     Comprehensive data model designed for scalability with proper relationships and constraints.
                 </p>
-
                 <div class="schema-grid fade-in">
-                    <div class="entity-card">
-                        <h4>👤 User</h4>
-                        <ul class="field-list">
-                            <li><span class="field-type">id:</span> Long (Primary Key)</li>
-                            <li><span class="field-type">email:</span> String (Unique)</li>
-                            <li><span class="field-type">fullName:</span> String</li>
-                            <li><span class="field-type">mobile:</span> String</li>
-                            <li><span class="field-type">password:</span> String (Encrypted)</li>
-                            <li><span class="field-type">role:</span> UserRole Enum</li>
-                        </ul>
-                        <p><strong>Relations:</strong> One-to-Many with Address, Many-to-Many with Coupon</p>
-                    </div>
-
-                    <div class="entity-card">
-                        <h4>🛍️ Product</h4>
-                        <ul class="field-list">
-                            <li><span class="field-type">id:</span> Long (Primary Key)</li>
-                            <li><span class="field-type">title:</span> String</li>
-                            <li><span class="field-type">description:</span> String</li>
-                            <li><span class="field-type">mrpPrice:</span> Integer</li>
-                            <li><span class="field-type">sellingPrice:</span> Integer</li>
-                            <li><span class="field-type">discountPercent:</span> Integer</li>
-                            <li><span class="field-type">quantity:</span> Integer</li>
-                            <li><span class="field-type">color:</span> String</li>
-                            <li><span class="field-type">sizes:</span> String</li>
-                            <li><span class="field-type">images:</span> List&lt;String&gt;</li>
-                        </ul>
-                        <p><strong>Relations:</strong> Many-to-One with Category & Seller, One-to-Many with Review</p>
-                    </div>
-
-                    <div class="entity-card">
-                        <h4>📦 Order</h4>
-                        <ul class="field-list">
-                            <li><span class="field-type">id:</span> Long (Primary Key)</li>
-                            <li><span class="field-type">totalSellingPrice:</span> Double</li>
-                            <li><span class="field-type">orderStatus:</span> OrderStatus Enum</li>
-                            <li><span class="field-type">createdAt:</span> LocalDateTime</li>
-                        </ul>
-                        <p><strong>Relations:</strong> Many-to-One with User & Seller, One-to-Many with OrderItem, One-to-One with PaymentOrder</p>
-                    </div>
-
-                    <div class="entity-card">
-                        <h4>🛒 Cart & CartItem</h4>
-                        <ul class="field-list">
-                            <li><span class="field-type">Cart.id:</span> Long (Primary Key)</li>
-                            <li><span class="field-type">CartItem.id:</span> Long (Primary Key)</li>
-                            <li><span class="field-type">quantity:</span> Integer</li>
-                            <li><span class="field-type">size:</span> String</li>
-                        </ul>
-                        <p><strong>Relations:</strong> Cart One-to-Many with CartItem, CartItem Many-to-One with Product</p>
-                    </div>
-
-                    <div class="entity-card">
-                        <h4>🏪 Seller</h4>
-                        <ul class="field-list">
-                            <li><span class="field-type">id:</span> Long (Primary Key)</li>
-                            <li><span class="field-type">email:</span> String</li>
-                            <li><span class="field-type">fullName:</span> String</li>
-                            <li><span class="field-type">mobile:</span> String</li>
-                            <li><span class="field-type">status:</span> AccountStatus Enum</li>
-                            <li><span class="field-type">businessDetails:</span> BusinessDetails (Embedded)</li>
-                            <li><span class="field-type">bankDetails:</span> BankDetails (Embedded)</li>
-                        </ul>
-                        <p><strong>Relations:</strong> One-to-Many with Product, One-to-One with SellerReport</p>
-                    </div>
-
-                    <div class="entity-card">
-                        <h4>💳 PaymentOrder</h4>
-                        <ul class="field-list">
-                            <li><span class="field-type">id:</span> Long (Primary Key)</li>
-                            <li><span class="field-type">amount:</span> Double</li>
-                            <li><span class="field-type">paymentLinkId:</span> String</li>
-                            <li><span class="field-type">paymentStatus:</span> PaymentStatus Enum</li>
-                        </ul>
-                        <p><strong>Relations:</strong> One-to-Many with Order, Many-to-One with User</p>
-                    </div>
-
-                    <div class="entity-card">
-                        <h4>⭐ Review</h4>
-                        <ul class="field-list">
-                            <li><span class="field-type">id:</span> Long (Primary Key)</li>
-                            <li><span class="field-type">reviewText:</span> String</li>
-                            <li><span class="field-type">reviewRating:</span> Double</li>
-                            <li><span class="field-type">createdAt:</span> LocalDateTime</li>
-                        </ul>
-                        <p><strong>Relations:</strong> Many-to-One with User & Product</p>
-                    </div>
-
-                    <div class="entity-card">
-                        <h4>🎫 Coupon</h4>
-                        <ul class="field-list">
-                            <li><span class="field-type">id:</span> Long (Primary Key)</li>
-                            <li><span class="field-type">code:</span> String</li>
-                            <li><span class="field-type">discountAmount:</span> Double</li>
-                            <li><span class="field-type">expiryDate:</span> LocalDateTime</li>
-                        </ul>
-                        <p><strong>Relations:</strong> Many-to-Many with User (usedCoupons)</p>
-                    </div>
+                    <!-- Entity Cards -->
+                    <div class="entity-card"><h4>👤 User</h4><ul class="field-list"><li><span class="field-type">id:</span> Long</li><li><span class="field-type">email:</span> String</li><li><span class="field-type">fullName:</span> String</li><li><span class="field-type">password:</span> String</li><li><span class="field-type">role:</span> Enum</li></ul><p><strong>Relations:</strong> Address, Coupon</p></div>
+                    <div class="entity-card"><h4>🛍️ Product</h4><ul class="field-list"><li><span class="field-type">id:</span> Long</li><li><span class="field-type">title:</span> String</li><li><span class="field-type">mrpPrice:</span> Integer</li><li><span class="field-type">sellingPrice:</span> Integer</li><li><span class="field-type">quantity:</span> Integer</li></ul><p><strong>Relations:</strong> Category, Seller, Review</p></div>
+                    <div class="entity-card"><h4>📦 Order</h4><ul class="field-list"><li><span class="field-type">id:</span> Long</li><li><span class="field-type">totalSellingPrice:</span> Double</li><li><span class="field-type">orderStatus:</span> Enum</li><li><span class="field-type">createdAt:</span> DateTime</li></ul><p><strong>Relations:</strong> User, Seller, OrderItem</p></div>
+                    <div class="entity-card"><h4>🛒 Cart & CartItem</h4><ul class="field-list"><li><span class="field-type">Cart.id:</span> Long</li><li><span class="field-type">CartItem.id:</span> Long</li><li><span class="field-type">quantity:</span> Integer</li><li><span class="field-type">size:</span> String</li></ul><p><strong>Relations:</strong> Product</p></div>
+                    <div class="entity-card"><h4>🏪 Seller</h4><ul class="field-list"><li><span class="field-type">id:</span> Long</li><li><span class="field-type">email:</span> String</li><li><span class="field-type">status:</span> Enum</li><li><span class="field-type">businessDetails:</span> Embedded</li></ul><p><strong>Relations:</strong> Product, SellerReport</p></div>
+                    <div class="entity-card"><h4>💳 PaymentOrder</h4><ul class="field-list"><li><span class="field-type">id:</span> Long</li><li><span class="field-type">amount:</span> Double</li><li><span class="field-type">paymentLinkId:</span> String</li><li><span class="field-type">paymentStatus:</span> Enum</li></ul><p><strong>Relations:</strong> Order, User</p></div>
+                    <div class="entity-card"><h4>⭐ Review</h4><ul class="field-list"><li><span class="field-type">id:</span> Long</li><li><span class="field-type">reviewText:</span> String</li><li><span class="field-type">reviewRating:</span> Double</li><li><span class="field-type">createdAt:</span> DateTime</li></ul><p><strong>Relations:</strong> User, Product</p></div>
+                    <div class="entity-card"><h4>🎫 Coupon</h4><ul class="field-list"><li><span class="field-type">id:</span> Long</li><li><span class="field-type">code:</span> String</li><li><span class="field-type">discountAmount:</span> Double</li><li><span class="field-type">expiryDate:</span> DateTime</li></ul><p><strong>Relations:</strong> User</p></div>
                 </div>
             </div>
         </section>
@@ -1209,236 +910,36 @@
                 <p class="section-subtitle fade-in">
                     Comprehensive API documentation with JWT authentication and role-based access control.
                 </p>
-
                 <div class="api-grid fade-in">
-                    <div class="api-category">
-                        <h4>🔐 Authentication</h4>
-                        <ul class="api-list">
-                            <li><span class="method post">POST</span> /auth/signup</li>
-                            <li><span class="method post">POST</span> /auth/signin</li>
-                            <li><span class="method post">POST</span> /auth/sent/login-signup-otp</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>👤 User Management</h4>
-                        <ul class="api-list">
-                            <li><span class="method get">GET</span> /users/profile</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>🛍️ Product Management</h4>
-                        <ul class="api-list">
-                            <li><span class="method get">GET</span> /products/{productId}</li>
-                            <li><span class="method get">GET</span> /products/search</li>
-                            <li><span class="method get">GET</span> /products (with filters)</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>🛒 Cart Management</h4>
-                        <ul class="api-list">
-                            <li><span class="method get">GET</span> /api/cart</li>
-                            <li><span class="method put">PUT</span> /api/cart/add</li>
-                            <li><span class="method delete">DELETE</span> /api/cart/item/{cartItemId}</li>
-                            <li><span class="method put">PUT</span> /api/cart/item/{cartItemId}</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>❤️ Wishlist Management</h4>
-                        <ul class="api-list">
-                            <li><span class="method get">GET</span> /api/wishlist</li>
-                            <li><span class="method post">POST</span> /api/wishlist/add-product/{productId}</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>📦 Order Management</h4>
-                        <ul class="api-list">
-                            <li><span class="method post">POST</span> /api/orders</li>
-                            <li><span class="method get">GET</span> /api/orders/user</li>
-                            <li><span class="method get">GET</span> /api/orders/{orderId}</li>
-                            <li><span class="method get">GET</span> /api/orders/item/{orderItemId}</li>
-                            <li><span class="method put">PUT</span> /api/orders/{orderId}/cancel</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>💳 Payment Management</h4>
-                        <ul class="api-list">
-                            <li><span class="method get">GET</span> /api/payment/{paymentId}</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>🏪 Seller Management</h4>
-                        <ul class="api-list">
-                            <li><span class="method post">POST</span> /sellers/login</li>
-                            <li><span class="method patch">PATCH</span> /sellers/verify/{otp}</li>
-                            <li><span class="method post">POST</span> /sellers</li>
-                            <li><span class="method get">GET</span> /sellers/{id}</li>
-                            <li><span class="method get">GET</span> /sellers/profile</li>
-                            <li><span class="method get">GET</span> /sellers/report</li>
-                            <li><span class="method patch">PATCH</span> /sellers</li>
-                            <li><span class="method delete">DELETE</span> /sellers/{id}</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>📦 Seller Products</h4>
-                        <ul class="api-list">
-                            <li><span class="method get">GET</span> /sellers/products</li>
-                            <li><span class="method post">POST</span> /sellers/products</li>
-                            <li><span class="method delete">DELETE</span> /sellers/products/{productId}</li>
-                            <li><span class="method put">PUT</span> /sellers/products/{productId}</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>📋 Seller Orders</h4>
-                        <ul class="api-list">
-                            <li><span class="method get">GET</span> /api/seller/orders</li>
-                            <li><span class="method patch">PATCH</span> /api/seller/orders/{orderId}/status/{orderStatus}</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>⭐ Review System</h4>
-                        <ul class="api-list">
-                            <li><span class="method get">GET</span> /api/products/{productId}/review</li>
-                            <li><span class="method post">POST</span> /api/products/{productId}/review</li>
-                            <li><span class="method patch">PATCH</span> /api/reviews/{reviewId}</li>
-                            <li><span class="method delete">DELETE</span> /api/reviews/{reviewId}</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>🎫 Coupon Management</h4>
-                        <ul class="api-list">
-                            <li><span class="method post">POST</span> /api/coupon/apply</li>
-                            <li><span class="method post">POST</span> /api/coupon/admin/create</li>
-                            <li><span class="method delete">DELETE</span> /api/coupon/admin/delete/{id}</li>
-                            <li><span class="method get">GET</span> /api/coupon/admin/all</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>🔥 Deal Management</h4>
-                        <ul class="api-list">
-                            <li><span class="method post">POST</span> /admin/deals</li>
-                            <li><span class="method patch">PATCH</span> /admin/deals/{id}</li>
-                            <li><span class="method delete">DELETE</span> /admin/deals/{id}</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>🏠 Home Categories</h4>
-                        <ul class="api-list">
-                            <li><span class="method post">POST</span> /home/categories</li>
-                            <li><span class="method get">GET</span> /admin/home-category</li>
-                            <li><span class="method patch">PATCH</span> /admin/home-category/{id}</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>💰 Transactions</h4>
-                        <ul class="api-list">
-                            <li><span class="method get">GET</span> /api/transactions/seller</li>
-                            <li><span class="method get">GET</span> /api/transactions</li>
-                        </ul>
-                    </div>
-
-                    <div class="api-category">
-                        <h4>👨‍💼 Admin Controls</h4>
-                        <ul class="api-list">
-                            <li><span class="method patch">PATCH</span> /api/seller/{id}/status/{status}</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- API Features -->
-                <div class="tech-grid" style="margin-top: 4rem;">
-                    <div class="tech-card">
-                        <h3>🔒 Authentication</h3>
-                        <ul class="tech-list">
-                            <li>JWT Bearer Token</li>
-                            <li>Role-based Access Control</li>
-                            <li>OTP Verification</li>
-                            <li>Session Management</li>
-                        </ul>
-                    </div>
-                    <div class="tech-card">
-                        <h3>📊 Data Format</h3>
-                        <ul class="tech-list">
-                            <li>JSON Request/Response</li>
-                            <li>RESTful Standards</li>
-                            <li>Pagination Support</li>
-                            <li>Error Handling</li>
-                        </ul>
-                    </div>
-                    <div class="tech-card">
-                        <h3>🔍 Advanced Features</h3>
-                        <ul class="tech-list">
-                            <li>Search & Filtering</li>
-                            <li>Sorting Options</li>
-                            <li>Query Parameters</li>
-                            <li>Bulk Operations</li>
-                        </ul>
-                    </div>
-                    <div class="tech-card">
-                        <h3>💳 Payment Methods</h3>
-                        <ul class="tech-list">
-                            <li>Razorpay Integration</li>
-                            <li>Stripe Integration</li>
-                            <li>Cash on Delivery</li>
-                            <li>Payment Status Tracking</li>
-                        </ul>
-                    </div>
+                    <!-- API Categories -->
+                    <div class="api-category"><h4>🔐 Authentication</h4><ul class="api-list"><li><span class="method post">POST</span> /auth/signup</li><li><span class="method post">POST</span> /auth/signin</li><li><span class="method post">POST</span> /auth/sent/login-signup-otp</li></ul></div>
+                    <div class="api-category"><h4>👤 User Management</h4><ul class="api-list"><li><span class="method get">GET</span> /users/profile</li></ul></div>
+                    <div class="api-category"><h4>🛍️ Product Management</h4><ul class="api-list"><li><span class="method get">GET</span> /products/{id}</li><li><span class="method get">GET</span> /products/search</li><li><span class="method get">GET</span> /products</li></ul></div>
+                    <div class="api-category"><h4>🛒 Cart Management</h4><ul class="api-list"><li><span class="method get">GET</span> /api/cart</li><li><span class="method put">PUT</span> /api/cart/add</li><li><span class="method delete">DELETE</span> /api/cart/item/{id}</li><li><span class="method put">PUT</span> /api/cart/item/{id}</li></ul></div>
+                    <div class="api-category"><h4>❤️ Wishlist Management</h4><ul class="api-list"><li><span class="method get">GET</span> /api/wishlist</li><li><span class="method post">POST</span> /api/wishlist/add-product/{id}</li></ul></div>
+                    <div class="api-category"><h4>📦 Order Management</h4><ul class="api-list"><li><span class="method post">POST</span> /api/orders</li><li><span class="method get">GET</span> /api/orders/user</li><li><span class="method get">GET</span> /api/orders/{id}</li><li><span class="method put">PUT</span> /api/orders/{id}/cancel</li></ul></div>
+                    <div class="api-category"><h4>💳 Payment Management</h4><ul class="api-list"><li><span class="method get">GET</span> /api/payment/{id}</li></ul></div>
+                    <div class="api-category"><h4>🏪 Seller Management</h4><ul class="api-list"><li><span class="method post">POST</span> /sellers/login</li><li><span class="method patch">PATCH</span> /sellers/verify/{otp}</li><li><span class="method post">POST</span> /sellers</li><li><span class="method get">GET</span> /sellers/{id}</li><li><span class="method delete">DELETE</span> /sellers/{id}</li></ul></div>
+                    <div class="api-category"><h4>📦 Seller Products</h4><ul class="api-list"><li><span class="method get">GET</span> /sellers/products</li><li><span class="method post">POST</span> /sellers/products</li><li><span class="method delete">DELETE</span> /sellers/products/{id}</li><li><span class="method put">PUT</span> /sellers/products/{id}</li></ul></div>
+                    <div class="api-category"><h4>📋 Seller Orders</h4><ul class="api-list"><li><span class="method get">GET</span> /api/seller/orders</li><li><span class="method patch">PATCH</span> /api/seller/orders/{id}/status</li></ul></div>
+                    <div class="api-category"><h4>⭐ Review System</h4><ul class="api-list"><li><span class="method get">GET</span> /api/products/{id}/review</li><li><span class="method post">POST</span> /api/products/{id}/review</li><li><span class="method delete">DELETE</span> /api/reviews/{id}</li></ul></div>
+                    <div class="api-category"><h4>🎫 Coupon Management</h4><ul class="api-list"><li><span class="method post">POST</span> /api/coupon/apply</li><li><span class="method post">POST</span> /api/coupon/admin/create</li><li><span class="method delete">DELETE</span> /api/coupon/admin/delete/{id}</li></ul></div>
                 </div>
             </div>
         </section>
 
-        <!-- Installation & Setup Section -->
+        <!-- Installation Section -->
         <section class="section">
             <div class="container">
                 <h2 class="section-title fade-in">🚀 Quick Start Guide</h2>
                 <p class="section-subtitle fade-in">
-                    Get up and running with Zeemerse backend in minutes.
+                    Get up and running with the Zeemerse backend in minutes.
                 </p>
-
                 <div class="tech-grid fade-in">
-                    <div class="tech-card">
-                        <h3>📋 Prerequisites</h3>
-                        <ul class="tech-list">
-                            <li>Java JDK 17+</li>
-                            <li>Maven 3.6+</li>
-                            <li>MySQL 8.0+</li>
-                            <li>Git</li>
-                            <li>IDE (IntelliJ/Eclipse)</li>
-                        </ul>
-                    </div>
-                    <div class="tech-card">
-                        <h3>⚙️ Configuration</h3>
-                        <ul class="tech-list">
-                            <li>Database URL Setup</li>
-                            <li>JWT Secret Configuration</li>
-                            <li>Payment Gateway Keys</li>
-                            <li>SMTP Settings</li>
-                            <li>Environment Variables</li>
-                        </ul>
-                    </div>
-                    <div class="tech-card">
-                        <h3>🏃‍♂️ Running</h3>
-                        <ul class="tech-list">
-                            <li>Clone Repository</li>
-                            <li>mvn clean install</li>
-                            <li>mvn spring-boot:run</li>
-                            <li>Access: localhost:8080</li>
-                            <li>API Testing Ready</li>
-                        </ul>
-                    </div>
+                    <!-- Guide Cards -->
+                    <div class="tech-card"><h3>📋 Prerequisites</h3><ul class="tech-list"><li>Java JDK 17+</li><li>Maven 3.6+</li><li>MySQL 8.0+</li><li>Git</li><li>IDE (IntelliJ/Eclipse)</li></ul></div>
+                    <div class="tech-card"><h3>⚙️ Configuration</h3><ul class="tech-list"><li>Database URL Setup</li><li>JWT Secret Configuration</li><li>Payment Gateway Keys</li><li>SMTP Settings</li><li>Environment Variables</li></ul></div>
+                    <div class="tech-card"><h3>🏃‍♂️ Running</h3><ul class="tech-list"><li>Clone Repository</li><li>mvn clean install</li><li>mvn spring-boot:run</li><li>Access: localhost:8080</li><li>API Testing Ready</li></ul></div>
                 </div>
             </div>
         </section>
@@ -1459,138 +960,119 @@
     </footer>
 
     <script>
-        // Mobile menu functionality
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const mobileNav = document.getElementById('mobileNav');
-        const mobileOverlay = document.getElementById('mobileOverlay');
-        let isMenuOpen = false;
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Mobile Menu Functionality ---
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileNav = document.getElementById('mobileNav');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+            let isMenuOpen = false;
 
-        function toggleMobileMenu() {
-            isMenuOpen = !isMenuOpen;
-            mobileMenuToggle.classList.toggle('active');
-            mobileNav.classList.toggle('active');
-            mobileOverlay.classList.toggle('active');
-            
-            // Prevent body scroll when menu is open
-            if (isMenuOpen) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = 'unset';
+            function toggleMobileMenu() {
+                isMenuOpen = !isMenuOpen;
+                mobileMenuToggle.classList.toggle('active');
+                mobileNav.classList.toggle('active');
+                mobileOverlay.classList.toggle('active');
+                document.body.style.overflow = isMenuOpen ? 'hidden' : '';
             }
-        }
 
-        function closeMobileMenu() {
-            isMenuOpen = false;
-            mobileMenuToggle.classList.remove('active');
-            mobileNav.classList.remove('active');
-            mobileOverlay.classList.remove('active');
-            document.body.style.overflow = 'unset';
-        }
-
-        mobileMenuToggle.addEventListener('click', toggleMobileMenu);
-
-        // Close mobile menu on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && isMenuOpen) {
-                closeMobileMenu();
+            function closeMobileMenu() {
+                if (!isMenuOpen) return;
+                isMenuOpen = false;
+                mobileMenuToggle.classList.remove('active');
+                mobileNav.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = '';
             }
-        });
 
-        // Close mobile menu on window resize if screen becomes large
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768 && isMenuOpen) {
-                closeMobileMenu();
-            }
-        });
+            mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+            mobileOverlay.addEventListener('click', closeMobileMenu);
+            mobileNavLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
 
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                if (targetId !== '#') {
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        targetElement.scrollIntoView({
-                            behavior: 'smooth'
-                        });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && isMenuOpen) closeMobileMenu();
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768 && isMenuOpen) closeMobileMenu();
+            });
+
+            // --- Scroll Animations ---
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target); // Optional: stop observing once visible
                     }
-                }
+                });
+            }, observerOptions);
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+            // --- Header Style on Scroll ---
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('.header');
+                header.classList.toggle('scrolled', window.scrollY > 50);
             });
-        });
 
-        // Fade in animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Header background on scroll
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('.header');
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
+            // --- Dynamic Typing Effect ---
+            const constructionTextEl = document.querySelector('.construction-text');
+            if (constructionTextEl) {
+                const texts = [
+                    '🚧 Frontend Under Construction 🚧',
+                    '⚡ Backend APIs Ready ⚡',
+                    '🔥 Spring Boot Powered 🔥',
+                    '🚀 Production Ready 🚀'
+                ];
+                let currentIndex = 0;
+                setInterval(() => {
+                    constructionTextEl.style.opacity = '0';
+                    setTimeout(() => {
+                        currentIndex = (currentIndex + 1) % texts.length;
+                        constructionTextEl.textContent = texts[currentIndex];
+                        constructionTextEl.style.opacity = '1';
+                    }, 500);
+                }, 3000);
             }
-        });
 
-        // Dynamic typing effect for the construction text
-        const constructionText = document.querySelector('.construction-text');
-        const texts = [
-            '🚧 Frontend Under Construction 🚧',
-            '⚡ Backend APIs Ready ⚡',
-            '🔥 Spring Boot Powered 🔥',
-            '🚀 Production Ready 🚀'
-        ];
-        let currentIndex = 0;
+            // --- API Endpoint Copy Functionality (Improved for compatibility) ---
+            function copyToClipboard(text) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.left = '-9999px'; // Move off-screen
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    return true;
+                } catch (err) {
+                    console.error('Fallback: Oops, unable to copy', err);
+                    return false;
+                } finally {
+                    document.body.removeChild(textarea);
+                }
+            }
 
-        setInterval(() => {
-            constructionText.style.opacity = '0';
-            setTimeout(() => {
-                currentIndex = (currentIndex + 1) % texts.length;
-                constructionText.textContent = texts[currentIndex];
-                constructionText.style.opacity = '1';
-            }, 500);
-        }, 3000);
-
-        // API endpoint copy functionality
-        document.querySelector('.endpoint-url').addEventListener('click', function() {
-            navigator.clipboard.writeText(this.textContent).then(() => {
-                const original = this.textContent;
-                this.textContent = 'Copied! ✅';
-                this.style.background = 'rgba(40, 167, 69, 0.3)';
-                setTimeout(() => {
-                    this.textContent = original;
-                    this.style.background = 'rgba(0,0,0,0.2)';
-                }, 2000);
-            });
-        });
-
-        // Add hover effects to API endpoints
-        document.querySelectorAll('.api-list li').forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateX(10px)';
-                this.style.background = '#e3f2fd';
-            });
-            
-            item.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateX(5px)';
-                this.style.background = '#f8f9fa';
-            });
+            const endpointUrlEl = document.querySelector('.endpoint-url');
+            if(endpointUrlEl) {
+                endpointUrlEl.addEventListener('click', function() {
+                    const originalText = this.textContent;
+                    if (copyToClipboard(originalText)) {
+                        this.textContent = 'Copied! ✅';
+                        this.style.background = 'rgba(40, 167, 69, 0.3)';
+                        setTimeout(() => {
+                            this.textContent = originalText;
+                            this.style.background = 'rgba(0,0,0,0.2)';
+                        }, 2000);
+                    }
+                });
+            }
         });
     </script>
 </body>
 </html>
+
